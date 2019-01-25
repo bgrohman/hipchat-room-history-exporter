@@ -1,0 +1,6 @@
+{
+    "name": "hipchat-room-history-exporter",
+    "description": "Export HipChat room history one room at a time",
+    "version": "1.0.0",
+    "license": "MIT"
+}
