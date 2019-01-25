@@ -5,7 +5,7 @@
 Since HipChat is shutting down on February 15th, 2019, you may want to archive
 your rooms. HipChat group administrators have the option to export history for
 all rooms, but there is no option to export a single room. This script exports
-all messages from a HipChat room.
+all messages from a single HipChat room.
 
 ## Setup
 
