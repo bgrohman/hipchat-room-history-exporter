@@ -1,3 +1,4 @@
+const fs = require('fs');
 const https = require('https');
 
 // Create a personal access token:
@@ -5,14 +6,18 @@ const https = require('https');
 // * Generate a new token with "View Messages" scope
 // * Create a HIPCHAT_AUTH_TOKEN environment variable with the token
 
+// Repeat calls, iterate start-index by 1000 until response.items is empty.
+
+const ISO_STRING_NOW = (new Date()).toISOString();
 const ROOM_ID = process.argv[2] || process.env.HIPCHAT_ROOM_ID;
-const HISTORY_PATH = '/v2/room/' + ROOM_ID + '/history';
+const RESULT_SIZE = 1000;
+const HISTORY_PATH = '/v2/room/' + ROOM_ID + '/history?max-results=' + RESULT_SIZE + '&reverse=false&date=' + ISO_STRING_NOW;
 const AUTH_TOKEN = process.env.HIPCHAT_AUTH_TOKEN;
 
-function sendRequest(callback) {
+function sendRequest(startIndex, callback) {
     let options = {
         hostname: 'nice.hipchat.com',
-        path: HISTORY_PATH,
+        path: HISTORY_PATH + '&start-index=' + startIndex,
         method: 'GET',
         headers: {
             'Authorization': 'Bearer ' + AUTH_TOKEN
@@ -28,7 +33,7 @@ function sendRequest(callback) {
         });
 
         response.on('end', () => {
-            callback(responseContent);
+            callback(JSON.parse(responseContent));
         });
     });
 
@@ -39,6 +44,32 @@ function sendRequest(callback) {
     request.end();
 }
 
-sendRequest((response) => {
-    console.log(response);
+let currentIndex = 0;
+let iterationCount = 0;
+let allMessages = [];
+
+function fetchNextSet(callback) {
+    sendRequest(currentIndex, (response) => {
+        let currentMessages = response.items;
+
+        if (response.items.length > 0) {
+            Array.prototype.push.apply(allMessages, currentMessages);
+
+            if (iterationCount <= 5) {
+                currentIndex += RESULT_SIZE;
+                fetchNextSet(callback);
+            } else {
+                callback();
+            }
+        } else {
+            callback();
+        }
+    });
+
+    iterationCount += 1;
+}
+
+fetchNextSet(() => {
+    fs.writeFileSync('history.json', JSON.stringify(allMessages, null, 2), 'utf8');
+    console.log(`Message Count: ${allMessages.length}`);
 });
