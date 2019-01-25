@@ -34,3 +34,10 @@ message count to the console as it executes.
 
 When all of the message history has been retrieved, it will be written to the
 `history.json` file in the current directory.
+
+You can use the `convertToPlainText.js` script to convert the JSON output into
+a plain text file:
+
+```
+node convertToPlainText.js <json-file-path> <output-text-file-path>
+```
