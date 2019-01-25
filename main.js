@@ -54,13 +54,9 @@ function fetchNextSet(callback) {
 
         if (response.items.length > 0) {
             Array.prototype.push.apply(allMessages, currentMessages);
-
-            if (iterationCount <= 5) {
-                currentIndex += RESULT_SIZE;
-                fetchNextSet(callback);
-            } else {
-                callback();
-            }
+            console.log(`Iteration ${iterationCount}, message count: ${allMessages.length}`);
+            currentIndex += RESULT_SIZE;
+            fetchNextSet(callback);
         } else {
             callback();
         }
