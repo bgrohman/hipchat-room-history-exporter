@@ -6,8 +6,6 @@ const https = require('https');
 // * Generate a new token with "View Messages" scope
 // * Create a HIPCHAT_AUTH_TOKEN environment variable with the token
 
-// Repeat calls, iterate start-index by 1000 until response.items is empty.
-
 const ISO_STRING_NOW = (new Date()).toISOString();
 const ROOM_ID = process.argv[2] || process.env.HIPCHAT_ROOM_ID;
 const RESULT_SIZE = 1000;
