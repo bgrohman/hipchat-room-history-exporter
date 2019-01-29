@@ -26,7 +26,7 @@ Make sure you have Node.js installed, and run the script with the following
 command:
 
 ```
-node main.js
+node export.js
 ```
 
 The script fetches messages in groups of 1000 and logs the current iteration and
